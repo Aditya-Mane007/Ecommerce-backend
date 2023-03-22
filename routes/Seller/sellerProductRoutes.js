@@ -8,8 +8,8 @@ const {
   deletProduct
 } = require("../../controllers/Seller/sellerProductController")
 
-router.get("/", protect, getALlProducts)
-router.post("/new", protect, createProduct)
-router.route("/:id").put(protect, updateProduct).delete(protect, deletProduct)
+router.get("/",protect,getALlProducts)
+router.post("/new",protect,createProduct)
+router.route("/:id").put(protect,updateProduct).delete(protect,deletProduct)
 
 module.exports = router
