@@ -4,8 +4,8 @@
   "description": "College Project E-commerce WebApp",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/index.js",
-    "server": "nodemon backend/index.js",
+    "start": "node index.js",
+    "server": "nodemon index.js",
     "client": "npm run --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
