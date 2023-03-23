@@ -20,9 +20,8 @@ const productSchma = mongoose.Schema(
       type: Number,
       default: 0
     },
-    picturPath: {
+    image: {
       type: String,
-
     },
     category: {
       type: String,

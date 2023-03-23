@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler")
 const Product = require("../../model/productModel")
 
+
+
+
 // Sellers
 const getALlProducts = asyncHandler(async (req,res) => {
   const products = await Product.find({ seller: req.seller.id })
@@ -11,8 +14,13 @@ const getALlProducts = asyncHandler(async (req,res) => {
 })
 
 const createProduct = asyncHandler(async (req,res) => {
-  const { name,description,price } = req.body
-  if (!name || !description || !price) {
+  const { name,description,price,image,quantity } = req.body
+
+  if (!req.seller) {
+    throw new Error("Not Authorized")
+  }
+
+  if (!name || !description || !price || image || quantity) {
     res.status(400)
     throw new Error("Please add the fields")
   }
@@ -20,6 +28,8 @@ const createProduct = asyncHandler(async (req,res) => {
     name,
     description,
     price,
+    image,
+    quantity,
     seller: req.seller.id
   })
   if (product) {
