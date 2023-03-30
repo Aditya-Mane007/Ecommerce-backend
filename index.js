@@ -29,32 +29,16 @@ app.use(morgan("common"))
 app.use(bodyParser.json({ limit: "30mb",extended: true }))
 app.use(bodyParser.urlencoded({ limit: "30mb",extended: true }))
 app.use(cors())
-app.use("/assets",express.static(path.join(__dirname,"/assets")))
 
-// Stroage
-const storage = multer.diskStorage({
-  destination: (req,file,cb) => {
-    cb(null,"/assets")
-  },
-  filename: (req,file,cb) => {
-    cb(null,file.originalname)
-  }
-})
 
-const upload = multer({ storage })
 // Routes
 app.use("/api/users",require("./routes/User/userRoutes"))
 app.use("/api/users/cart",require("./routes/User/cartRoutes"))
-app.use("/api/sellers",require("./routes/Seller/sellerRoutes"))
-app.use("/api/sellers/product",require("./routes/Seller/sellerProductRoutes"))
-
-app.use("/api/sellers/product/add",protect,upload.single("picture"),createProduct)
-
 app.use("/api/users/products",require("./routes/User/userProductsRoutes"))
 app.use("/api/users/cart",require("./routes/User/cartRoutes"))
-
+app.use("/api/sellers",require("./routes/Seller/sellerRoutes"))
+app.use("/api/sellers/product",require("./routes/Seller/sellerProductRoutes"))
 app.use(errorHandler)
-
 
 
 app.listen(port,() => {

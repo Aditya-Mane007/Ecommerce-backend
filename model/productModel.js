@@ -21,7 +21,17 @@ const productSchma = mongoose.Schema(
       default: 0
     },
     image: {
-      type: String,
+      public_id: {
+        type: String,
+        // required: true,
+      },
+      url: {
+        type: String,
+        // required: true,
+      },
+    },
+    quantity: {
+      type: String
     },
     category: {
       type: String,

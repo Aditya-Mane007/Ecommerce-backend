@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler")
 const Cart = require("../../model/cartModel")
 const Product = require("../../model/productModel")
 
-const getAllProducts = asyncHandler(async (req, res) => {
+const getAllProducts = asyncHandler(async (req,res) => {
   const products = await Product.find()
 
   res.status(200).json({
@@ -11,7 +11,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   })
 })
 
-const addToCart = asyncHandler(async (req, res) => {
+const addToCart = asyncHandler(async (req,res) => {
   const product = Product.findById(req.params.id)
   if (!product) {
     res.status(400)

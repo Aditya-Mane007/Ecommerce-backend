@@ -1,7 +1,13 @@
 const asyncHandler = require("express-async-handler")
 const Product = require("../../model/productModel")
+const dataUri = require("../../utils/dataUri")
 
-
+const cloudinary = require("cloudinary").v2
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+})
 
 
 // Sellers
@@ -13,39 +19,65 @@ const getALlProducts = asyncHandler(async (req,res) => {
   })
 })
 
+
+const getProductDetails = asyncHandler(async (req,res) => {
+  const product = await Product.findById(req.params.id)
+  res.status(200).json({
+    product: product
+  })
+})
+
 const createProduct = asyncHandler(async (req,res) => {
-  const { name,description,price,image,quantity } = req.body
+  const { name,description,price,quantity,category } = req.body
+  const image = req.file
+
+  if (!name || !description || !price || !quantity || !category || !image) {
+    res.status(400)
+    throw new Error("Please add all fields")
+  }
+
+  const fileUri = dataUri(image)
+  const myCloud = await cloudinary.uploader.upload(fileUri.content)
 
   if (!req.seller) {
     throw new Error("Not Authorized")
-  }
-
-  if (!name || !description || !price || image || quantity) {
-    res.status(400)
-    throw new Error("Please add the fields")
   }
   const product = await Product.create({
     name,
     description,
     price,
-    image,
     quantity,
+    image: {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url
+    },
+    category,
     seller: req.seller.id
   })
+
   if (product) {
-    res.status(200).json({
-      name,
-      description,
-      price,
-      seller: req.seller.id
+    res.status(201).json({
+      product: product,
+      message: "Prouct Created"
     })
   } else {
     res.status(400)
-    throw new Error("Invalid Product Data")
+    throw new Error("Invalid product data")
   }
 })
 const updateProduct = asyncHandler(async (req,res) => {
   const product = await Product.findById(req.params.id)
+  const { name,description,price,quantity,category } = req.body
+  console.log(req.body)
+  // const image = req.file
+
+  // if (!name || !description || !price || !quantity || !category || !image) {
+  //   res.status(400)
+  //   throw new Error("Please add all fields")
+  // }
+
+  // const fileUri = dataUri(image)
+  // const myCloud = await cloudinary.uploader.upload(fileUri.content)
   if (!product) {
     res.status(400)
     throw new Error("Product Not Found")
@@ -58,11 +90,23 @@ const updateProduct = asyncHandler(async (req,res) => {
     res.status(400)
     throw new Error("Seller Not Authorized")
   }
+  const updatedProductDetails = {
+    name: name,
+    description: description,
+    price: price,
+    quantity: quantity,
+    category: category,
+    seller: req.seller.id
+  }
+
+  console.log(updatedProductDetails)
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    updatedProductDetails,
     {
-      new: true
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
     }
   )
   if (updatedProduct) {
@@ -87,16 +131,17 @@ const deletProduct = asyncHandler(async (req,res) => {
     throw new Error("Seller Not Authorized")
   }
 
+  await cloudinary.v2.uploader.destroy(product.images[i].public_id)
   await Product.findByIdAndDelete(req.params.id)
-
   res.status(200).json({
     id: req.params.id,
-    message: "Delte Product"
+    message: "Delete Product"
   })
 })
 
 module.exports = {
   getALlProducts,
+  getProductDetails,
   createProduct,
   updateProduct,
   deletProduct
