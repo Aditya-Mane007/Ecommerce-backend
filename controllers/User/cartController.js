@@ -1,8 +1,10 @@
 const asyncHandler = require("express-async-handler")
 const User = require("../../model/userModel")
 const Cart = require("../../model/cartModel")
+const Product = require("../../model/productModel")
 
-const getAllProducts = asyncHandler(async (req, res) => {
+
+const getAllProducts = asyncHandler(async (req,res) => {
   if (!req.user.id) {
     res.status(400)
     throw new Error("User Not Found")
@@ -13,12 +15,19 @@ const getAllProducts = asyncHandler(async (req, res) => {
     message: "Get Products From Cart"
   })
 })
-// const addProducts = asyncHandler(async (req, res) => {
-//   res.status(200).json({
-//     message: "Get Products From Cart"
-//   })
-// })
-const deleteProduct = asyncHandler(async (req, res) => {
+const addProducts = asyncHandler(async (req,res) => {
+  const product = await Cart.create(req.body)
+  if (product) {
+    res.status(200).json({
+      product: product,
+      message: "Product added to the cart"
+    })
+  } else {
+    res.status(500)
+    throw new Error("Something went wrong!")
+  }
+})
+const deleteProduct = asyncHandler(async (req,res) => {
   const product = await Cart.findById(req.params.id)
   if (!product) {
     res.status(400)
@@ -40,6 +49,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAllProducts,
-  // addProducts,
+  addProducts,
   deleteProduct
 }

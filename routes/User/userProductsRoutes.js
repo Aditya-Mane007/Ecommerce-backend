@@ -1,12 +1,13 @@
 const express = require("express")
 const {
   getAllProducts,
-  addToCart
+  addToCart,
+  getProduct
 } = require("../../controllers/User/userProductController")
 const { protect } = require("../../middleware/userAuthMiddleware")
 const router = express.Router()
 
 router.get("/",getAllProducts)
-router.post("/:id",protect,addToCart)
+router.route("/:id").get(getProduct)
 
 module.exports = router

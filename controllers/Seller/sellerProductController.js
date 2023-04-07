@@ -68,10 +68,9 @@ const createProduct = asyncHandler(async (req,res) => {
 const updateProduct = asyncHandler(async (req,res) => {
   const product = await Product.findById(req.params.id)
   const { name,description,price,quantity,category } = req.body
-  console.log(req.body)
   // const image = req.file
 
-  // if (!name || !description || !price || !quantity || !category || !image) {
+  // if (!name || !description || !price || !quantity || !category) {
   //   res.status(400)
   //   throw new Error("Please add all fields")
   // }
@@ -90,19 +89,20 @@ const updateProduct = asyncHandler(async (req,res) => {
     res.status(400)
     throw new Error("Seller Not Authorized")
   }
-  const updatedProductDetails = {
-    name: name,
-    description: description,
-    price: price,
-    quantity: quantity,
-    category: category,
-    seller: req.seller.id
-  }
 
-  console.log(updatedProductDetails)
+  const updatedDetails = {}
+
+  if (name) updatedDetails.name = name
+  if (description) updatedDetails.description = description
+  if (price) updatedDetails.price = price
+  if (quantity) updatedDetails.quantity = quantity
+  if (category) updatedDetails.category = category
+
+  console.log(updatedDetails)
+
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
-    updatedProductDetails,
+    { $set: updatedDetails },
     {
       new: true,
       runValidators: true,

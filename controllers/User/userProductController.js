@@ -11,27 +11,14 @@ const getAllProducts = asyncHandler(async (req,res) => {
   })
 })
 
-const addToCart = asyncHandler(async (req,res) => {
-  const product = Product.findById(req.params.id)
-  if (!product) {
-    res.status(400)
-    throw new Error("Product Not Found")
-  }
-  if (!req.user) {
-    throw new Error("User not Found")
-  }
-  const cart = await Cart.create({
-    user: req.user.id,
-    productInfo: req.params.id,
-    quantity: 1
-  })
+const getProduct = asyncHandler(async (req,res) => {
+  const product = await Product.findById(req.params.id)
   res.status(200).json({
-    products: cart,
-    message: "Fetch All the products"
+    product: product
   })
 })
 
 module.exports = {
   getAllProducts,
-  addToCart
+  getProduct,
 }

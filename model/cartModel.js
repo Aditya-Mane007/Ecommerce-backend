@@ -8,9 +8,43 @@ const CartSchema = mongoose.Schema(
       required: true
     },
     productInfo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true
+      product_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true
+      },
+      image: {
+        public_id: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      description: {
+        type: String,
+        required: true
+      },
+      price: {
+        type: String,
+        required: true
+      },
+      category: {
+        type: String,
+        required: true
+      },
+      seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Seller",
+        required: true
+
+      }
     },
     quantity: {
       type: Number,
@@ -23,4 +57,4 @@ const CartSchema = mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model("Cart", CartSchema)
+module.exports = mongoose.model("Cart",CartSchema)
