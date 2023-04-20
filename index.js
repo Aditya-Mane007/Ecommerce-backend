@@ -38,6 +38,10 @@ app.use("/api/users/products",require("./routes/User/userProductsRoutes"))
 app.use("/api/users/cart",require("./routes/User/cartRoutes"))
 app.use("/api/sellers",require("./routes/Seller/sellerRoutes"))
 app.use("/api/sellers/product",require("./routes/Seller/sellerProductRoutes"))
+app.use("/api",require("./routes/paymertRoutes"))
+app.get("/api/getKey",(req,res) => { res.status(200).json({ key: process.env.RAZORPAY_KEY_ID }) })
+
+
 app.use(errorHandler)
 
 
