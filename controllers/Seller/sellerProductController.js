@@ -35,10 +35,9 @@ const createProduct = asyncHandler(async (req,res) => {
     res.status(400)
     throw new Error("Please add all fields")
   }
-
   const fileUri = dataUri(image)
+  console.log(fileUri)
   const myCloud = await cloudinary.uploader.upload(fileUri.content)
-
   if (!req.seller) {
     throw new Error("Not Authorized")
   }
@@ -68,19 +67,14 @@ const createProduct = asyncHandler(async (req,res) => {
 const updateProduct = asyncHandler(async (req,res) => {
   const product = await Product.findById(req.params.id)
   const { name,description,price,quantity,category } = req.body
-  // const image = req.file
-
-  // if (!name || !description || !price || !quantity || !category) {
-  //   res.status(400)
-  //   throw new Error("Please add all fields")
-  // }
-
-  // const fileUri = dataUri(image)
-  // const myCloud = await cloudinary.uploader.upload(fileUri.content)
+  const image = req.file
   if (!product) {
     res.status(400)
     throw new Error("Product Not Found")
   }
+  // const fileUri = dataUri(image)
+  // console.log(image)
+  const myCloud = await cloudinary.uploader.upload(image)
   if (!req.seller.id) {
     res.status(400)
     throw new Error("Seller Not Found")
@@ -89,20 +83,29 @@ const updateProduct = asyncHandler(async (req,res) => {
     res.status(400)
     throw new Error("Seller Not Authorized")
   }
-
-  const updatedDetails = {}
-
-  if (name) updatedDetails.name = name
-  if (description) updatedDetails.description = description
-  if (price) updatedDetails.price = price
-  if (quantity) updatedDetails.quantity = quantity
-  if (category) updatedDetails.category = category
-
+  // const updatedDetails = {}
+  // if (name) updatedDetails.name = name
+  // if (description) updatedDetails.description = description
+  // if (price) updatedDetails.price = price
+  // if (quantity) updatedDetails.quantity = quantity
+  // if (category) updatedDetails.category = category
+  const updatedDetails = {
+    name,
+    description,
+    price,
+    quantity,
+    image: {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url
+    },
+    category,
+    seller: req.seller.id
+  }
   console.log(updatedDetails)
-
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
-    { $set: updatedDetails },
+    // { $set: updatedDetails },
+    updatedDetails,
     {
       new: true,
       runValidators: true,

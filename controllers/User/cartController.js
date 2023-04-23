@@ -15,6 +15,20 @@ const getAllProducts = asyncHandler(async (req,res) => {
     message: "Get Products From Cart"
   })
 })
+
+const getProductDetails = asyncHandler(async (req,res) => {
+  if (!req.user.id) {
+    res.status(400)
+    throw new Error("User Not Found")
+  }
+  const products = await Cart.findById(req.params.id)
+  console.log(req.params.id)
+  res.status(200).json({
+    products,
+    message: "Get Products From Cart"
+  })
+})
+
 const addProducts = asyncHandler(async (req,res) => {
   const product = await Cart.create(req.body)
   if (product) {
@@ -49,6 +63,7 @@ const deleteProduct = asyncHandler(async (req,res) => {
 
 module.exports = {
   getAllProducts,
+  getProductDetails,
   addProducts,
   deleteProduct
 }

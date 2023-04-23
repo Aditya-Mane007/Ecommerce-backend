@@ -14,6 +14,6 @@ const {
 
 router.get("/",protect,getALlProducts)
 router.post("/add",protect,upload,createProduct)
-router.route("/:id").put(protect,updateProduct).delete(protect,deletProduct).get(protect,getProductDetails)
-
+router.route("/:id").delete(protect,deletProduct).get(protect,getProductDetails)
+router.route("/update/:id").put(protect,updateProduct)
 module.exports = router

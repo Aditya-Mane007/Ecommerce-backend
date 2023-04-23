@@ -3,9 +3,9 @@ const path = require("path")
 
 
 const getUri = (image) => {
-  console.log(image)
   const parser = new DatauriParser()
   const extName = path.extname(image.originalname).toString()
+  console.log(extName)
   return parser.format(extName,image.buffer)
 }
 

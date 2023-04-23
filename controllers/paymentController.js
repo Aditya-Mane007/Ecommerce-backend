@@ -12,9 +12,7 @@ const checkout = asyncHandler(async (req,res) => {
     currency: "INR",
     // receipt: "order_rcptid_11"
   }
-
   const order = await instance.orders.create(options)
-
   console.log(order)
   res.status(200).json({
     order: order,

@@ -8,8 +8,8 @@ const {
   getSeller
 } = require("../../controllers/Seller/sellerController")
 
-router.post("/", registerSeller)
-router.post("/login", loginSeller)
-router.get("/me", protect, getSeller)
+router.post("/",registerSeller)
+router.post("/login",loginSeller)
+router.get("/me",protect,getSeller)
 
 module.exports = router
